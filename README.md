@@ -3,11 +3,11 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: The wording of this question is confusing. Constraint propagation is a general AI strategy which we are using to solve Sudoku.  Naked twins is a constraint that we are identifying and using in the constraint propagation.  
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: Another somewhat ambiguous question.  I'm assuming it means what adjustments are required by the inclusion of diagonal units.  The diagonal sudoku problem simply gives us more constraints -- namely that the numbers 1-9 must appear in the diagonal units only once.  Another way to say this is that it increase the 'constraint domain' on which we apply constraint propagation.  So the only change required in the code is to include the diagonal units in the unitlist, i.e. the units on which to apply constraint propagation.
 
 ### Install
 
