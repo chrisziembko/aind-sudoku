@@ -3,11 +3,15 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: The wording of this question is confusing. Constraint propagation is a general AI strategy which we are using to solve Sudoku.  Naked twins is a constraint that we are identifying and using in the constraint propagation.  
+A: The naked twins strategy enforces that, for each unit, the values in the naked twin boxes cannot appear in any other boxes in the unit.  So we implement this by looping through the constraints (i.e. units), looking for naked twins, and if found, removing their values from peers in the unit.
+
+In the code, the naked twins strategy is implemented along with "eliminate" and "only choice" as methods in the puzzle reduction (i.e. the sweepp through the puzzle reducing the possibility of values).  It should be implemented as its own function for encapsulation.  The naked twins must be identified by unit, which I did by seeing if there are two-digit values in the unit that appear twice.  If a naked twin value is found, these values are removed from other boxes in the unit.
+
+NOTE:  I changed my answer to confrom with how udacity is interpreting constraint propagation as applied to sudoku.  I'm not wild about this interpretation however.  You guys refer to the constraints as e.g. the fact that the values 1-9 must be in a row uniquely.  I view this by simply part of the problem domain. Even though this technically is "constraining" the values, it is simply defining the problem/puzzle.  I view the strategies e.g. the "only_choice" and "naked_twins" as the constraints since these are the insights that cause the values in the boxes to be constrained, and these strategies are quite literally the constraints that we are propagating.  It doesn't really make sense to say that the unit constraints (i.e. fact that 1-9 appear in a row uniquely) propagated because the strategies are applied on different domains.  For instance "eliminate" is applied on all peers whereas "naked_twins" is applied on individual units.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: Another somewhat ambiguous question.  I'm assuming it means what adjustments are required by the inclusion of diagonal units.  The diagonal sudoku problem simply gives us more constraints -- namely that the numbers 1-9 must appear in the diagonal units only once.  Another way to say this is that it increase the 'constraint domain' on which we apply constraint propagation.  So the only change required in the code is to include the diagonal units in the unitlist, i.e. the units on which to apply constraint propagation.
+A: Since general constraint propagation as applied to sudoku has been discussed extensively in the module, I'm assuming the question means what adjustments are required by the inclusion of diagonal units.  The fact that the digits 1-9 must appear in the diagonal units only once simply gives us more constraints to enforce.  Another way to say this is that it increases the 'constraint domain' on which we apply constraint propagation.  That is, the diagonal units must be included with the row units, column units, and square units when implementing puzzle reduction strategies.  So the only change required in the code is to include the diagonal units in the unitlist, i.e. the units on which to apply constraint propagation.
 
 ### Install
 

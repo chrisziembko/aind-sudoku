@@ -1,3 +1,6 @@
+# You guys should follow pep 8
+from copy import deepcopy
+
 assignments = []
 
 def assign_value(values, box, value):
@@ -23,8 +26,6 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-    # Find all instances of naked twins
-    nt = set()
     for unit in [tuple(u) for u in unitlist]:
         # Look for naked twin in unit
         unit_vals = [values[box] for box in unit]
@@ -33,16 +34,14 @@ def naked_twins(values):
             # twice in unit
             val = values[box]
             if len(val) == 2 and unit_vals.count(val) == 2:
-                nt.add(tuple([val, unit]))
-    # Eliminate the naked twins as possibilities for their peers
-    for nt_val, unit in nt:
-        for box in unit:
-            value = values[box]
-            if value == nt_val:
-                continue
-            for digit in nt_val:
-                value = value.replace(digit, '')
-            assign_value(values, box, value)
+                nt_val = val
+                for box in unit:
+                    value = values[box]
+                    if value == nt_val:
+                        continue
+                    for digit in nt_val:
+                        value = value.replace(digit, '')
+                    assign_value(values, box, value)
     return values
 
 
@@ -50,6 +49,8 @@ def cross(A, B):
     "Cross product of elements in A and elements in B."
     return [a+b for a in A for b in B]
 
+# ----------------------------------------------------------
+# ASSIGN GLOBALS
 
 rows = 'ABCDEFGHI'
 cols = '123456789'
@@ -63,6 +64,7 @@ diag_units = [["".join(x) for x in list(zip(rows, cols))],
 unitlist = row_units + column_units + square_units + diag_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
+# ----------------------------------------------------------
 
 def grid_values(grid):
     """
@@ -96,6 +98,13 @@ def display(values):
 
 
 def eliminate(values):
+    """
+    Removes solved values from peers.
+
+    Input: Sudoku in dictionary form.
+    Output: Resulting Sudoku in dictionary form with solved values
+            removed from peers.
+    """
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     for box in solved_values:
         digit = values[box]
@@ -122,6 +131,15 @@ def only_choice(values):
 
 
 def reduce_puzzle(values):
+    """
+    Applies puzzle reduction strategies to Sudoku puzzle.
+
+    Input: Sudoku in dictionary form.
+    Output: 
+        - If puzzle can be reduced, returns resulting Sudoku in dictionary form 
+          after reducing.
+        - If puzzle cannot be reduced, returns False bool
+   """
     stalled = False
     while not stalled:
         # Check how many boxes have a determined value
@@ -131,7 +149,7 @@ def reduce_puzzle(values):
         # Only Choice Strategy
         values = only_choice(values)
 		# Naked Twins strategy
-
+        values = naked_twins(values)
         # Check how many boxes have a determined value, to compare
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         # If no new values were added, stop the loop.
@@ -143,7 +161,13 @@ def reduce_puzzle(values):
 
 
 def search(values):
-    "Using depth-first search and propagation, try all possible values."
+    """
+    "Using depth-first search and propagation to try and solve the Sudoku puzzle.
+    
+    Input: Sudoku in dictionary form.
+    Output: Resulting Sudoku in dictionary form after search and constraint 
+            propagation applied.
+    """
     # First, reduce the puzzle using the previous function
     values = reduce_puzzle(values)
     if values is False:
